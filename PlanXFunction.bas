@@ -286,6 +286,29 @@ With Worksheets(planilha).Range(UCase(coluna) + ":" + UCase(coluna))
 End With
 End Function
 
+'FUNÇÃO NOVA
+'Buscar dados em toda a planilha (Sem repetições) E PEGAR DO PRIMEIRO
+Function buscarDadosInicio(planilha As String, valor As String, coluna As String, qtdItens As Integer, resultado As Variant)
+Worksheets(planilha).Activate
+Worksheets(planilha).Select
+With Worksheets(planilha).Range(UCase(coluna) + ":" + UCase(coluna))
+    Set c = .Find(valor, LookIn:=xlValues, lookat:=xlWhole)
+    If Not c Is Nothing Then
+        c.Activate
+        celula = "A" + CStr(ActiveCell.Row)
+        Range(celula).Select
+        For i = 0 To qtdItens - 1
+            resultado(i) = ActiveCell.Offset(0, i).Value
+            
+        Next i
+        buscarDadosInicio = True
+    Else
+        buscarDadosInicio = False
+    End If
+End With
+End Function
+
+
 'ATUALIZAÇÃO NOVA FUNÇÃO
 'Buscar dados em toda a planilha com condição (Sem repetições)
 Function buscarDadosCond(planilha As String, valor As String, coluna As String, qtdItens As Integer, resultado() As String, condicaoTexto As String, puloCélula As Integer)
@@ -319,7 +342,7 @@ Function sair(formulario As Object, Confirmar As Boolean)
 Dim wb As Workbook
 If Confirmar = False Then
     If Application.Workbooks.Count = 1 Then
-        ActiveWorkbook.Save
+        ActiveWorkbook.SAVE
         Application.Quit
     Else
         Application.Visible = True
@@ -333,7 +356,7 @@ If Confirmar = False Then
 Else
     If MsgBox("Tem certeza que deseja finalizar?", vbInformation + vbYesNo, "Finalizar") = vbYes Then
         If Application.Workbooks.Count = 1 Then
-            ActiveWorkbook.Save
+            ActiveWorkbook.SAVE
             Application.Quit
         Else
             Application.Visible = True
